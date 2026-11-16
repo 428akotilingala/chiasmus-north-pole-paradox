@@ -1,0 +1,255 @@
+@import "tailwindcss";
+@import "@fontsource/atkinson-hyperlegible-next/latin-400.css";
+@import "@fontsource/atkinson-hyperlegible-next/latin-400-italic.css";
+@import "@fontsource/atkinson-hyperlegible-next/latin-700.css";
+@import "@fontsource/atkinson-hyperlegible-next/latin-800.css";
+
+/*
+  Design tokens. The palette is the brief's own: midnight navy base,
+  Christmas red, evergreen, warm gold, snow, magical cyan, corrupted purple.
+  Reality A-B leans warm (gold / red / evergreen); Mirror B-A leans purple / cyan.
+*/
+/* Jersey 15 (SIL Open Font License): a legible arcade pixel face with open C and G.
+   size-adjust scales it up so its letters match the rest of the type scale. */
+@font-face {
+  font-family: "Jersey 15 Game";
+  src: url("../node_modules/@fontsource/jersey-15/files/jersey-15-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: block;
+  size-adjust: 118%;
+}
+
+@theme {
+  --color-night: #101827;
+  --color-night-2: #172036;
+  --color-night-3: #223052;
+  --color-night-4: #33467a;
+  --color-ink: #070b14;
+  --color-berry: #E63946;
+  --color-berry-dark: #a51f2e;
+  /* red for small text on dark: 7.1:1 on #101827 (the fill red is only 4.3:1) */
+  --color-berry-light: #ff7a84;
+  --color-pine: #147D64;
+  --color-pine-dark: #0b5544;
+  --color-gold: #F7C65F;
+  --color-gold-dark: #b98426;
+  --color-snow: #F7FAFC;
+  --color-frost: #c9d6ea;
+  --color-ice: #69E6F1;
+  --color-ice-dark: #2a9fb0;
+  --color-hex: #9B5DE5;
+  --color-hex-dark: #5b2d99;
+
+  --font-pixel: "Jersey 15 Game", ui-monospace, monospace;
+  --font-read: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+
+@layer base {
+/* ---------- base ---------- */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: var(--color-ink);
+  overflow: hidden;
+}
+body {
+  font-family: var(--font-read);
+  color: var(--color-snow);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+button { font: inherit; color: inherit; }
+a { color: var(--color-ice); }
+::selection { background: var(--color-hex); color: var(--color-snow); }
+
+}
+
+/* The fixed 1600x900 stage is scaled to fit any screen (see Stage.tsx),
+   so the layout at 1366x768 and 1920x1080 is identical. */
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1600px;
+  height: 900px;
+  transform-origin: center center;
+  overflow: hidden;
+  background: var(--color-night);
+  font-size: 28px;
+  line-height: 1.4;
+}
+
+.font-pixel { font-family: var(--font-pixel); font-synthesis: none; font-variant-ligatures: none; letter-spacing: 0.01em; }
+.font-read { font-family: var(--font-read); }
+.pixelated { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+@layer components {
+/* ---------- pixel frame: notched-corner panels, no rounded cards ---------- */
+.frame {
+  --frame: #0a0f1c;
+  --frame-hi: #33467a;
+  position: relative;
+  background: var(--panel, var(--color-night-2));
+  box-shadow:
+    inset 0 0 0 4px var(--frame-hi),
+    0 -6px 0 0 var(--frame),
+    0 6px 0 0 var(--frame),
+    -6px 0 0 0 var(--frame),
+    6px 0 0 0 var(--frame);
+}
+.frame-gold { --frame-hi: var(--color-gold-dark); }
+.frame-ice { --frame-hi: var(--color-ice-dark); }
+.frame-hex { --frame-hi: var(--color-hex); }
+.frame-berry { --frame-hi: var(--color-berry-dark); }
+.frame-paper {
+  --panel: #f4ead2;
+  --frame-hi: #d8c69c;
+  color: #1d1a2b;
+}
+
+/* ---------- chunky pixel buttons ---------- */
+.btn {
+  --bg: var(--color-gold);
+  --fg: var(--color-ink);
+  --edge: #0a0f1c;
+  --depth: var(--color-gold-dark);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-family: var(--font-pixel);
+  font-synthesis: none;
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1;
+  padding: 18px 30px 16px;
+  background: var(--bg);
+  color: var(--fg);
+  border: 0;
+  cursor: pointer;
+  box-shadow:
+    inset 0 -6px 0 0 var(--depth),
+    0 -4px 0 0 var(--edge),
+    0 4px 0 0 var(--edge),
+    -4px 0 0 0 var(--edge),
+    4px 0 0 0 var(--edge);
+  transition: transform 80ms steps(2), filter 120ms;
+}
+.btn:hover { filter: brightness(1.08); transform: translateY(-2px); }
+.btn:active { transform: translateY(3px); box-shadow: inset 0 -2px 0 0 var(--depth), 0 -4px 0 0 var(--edge), 0 4px 0 0 var(--edge), -4px 0 0 0 var(--edge), 4px 0 0 0 var(--edge); }
+.btn:disabled { filter: grayscale(0.8) brightness(0.6); cursor: not-allowed; transform: none; }
+.btn-red { --bg: var(--color-berry); --fg: var(--color-snow); --depth: var(--color-berry-dark); }
+.btn-pine { --bg: var(--color-pine); --fg: var(--color-snow); --depth: var(--color-pine-dark); }
+.btn-ice { --bg: var(--color-ice); --fg: var(--color-ink); --depth: var(--color-ice-dark); }
+.btn-hex { --bg: var(--color-hex); --fg: var(--color-snow); --depth: var(--color-hex-dark); }
+.btn-ghost { --bg: var(--color-night-3); --fg: var(--color-snow); --depth: #141d33; }
+.btn-sm { font-size: 22px; padding: 12px 18px 10px; gap: 10px; }
+.btn-lg { font-size: 40px; padding: 24px 40px 22px; }
+
+:focus { outline: none; }
+:focus-visible {
+  outline: 4px dashed var(--color-ice);
+  outline-offset: 8px;
+}
+
+/* key cap hint, e.g. [Space] */
+.kbd {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-synthesis: none;
+  font-size: 0.8em;
+  line-height: 1;
+  padding: 4px 8px 3px;
+  background: var(--color-night-3);
+  color: var(--color-snow);
+  box-shadow: inset 0 -3px 0 #0a0f1c, 0 0 0 2px #0a0f1c;
+  vertical-align: 0.1em;
+}
+
+}
+
+/* role highlights used by "Detect reversal" and the chi diagrams */
+.role-A { color: var(--color-gold); }
+.role-B { color: var(--color-ice); }
+.role-C { color: #ff9aa2; }
+.mark-A, .mark-B, .mark-C {
+  padding: 0 0.12em;
+  margin: 0 -0.04em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.mark-A { background: rgba(247, 198, 95, 0.22); box-shadow: inset 0 -0.14em 0 var(--color-gold); }
+.mark-B { background: rgba(105, 230, 241, 0.2); box-shadow: inset 0 -0.14em 0 var(--color-ice); }
+.mark-C { background: rgba(230, 57, 70, 0.22); box-shadow: inset 0 -0.14em 0 var(--color-berry); }
+.tag {
+  font-family: var(--font-pixel);
+  font-synthesis: none;
+  font-size: 0.5em;
+  vertical-align: super;
+  margin-left: 0.15em;
+  font-weight: 700;
+}
+
+/* ---------- motion ---------- */
+@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes pop-in { 0% { transform: scale(0.6); opacity: 0; } 70% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes rise-in { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes shake { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-6px, 2px); } 40% { transform: translate(5px, -3px); } 60% { transform: translate(-4px, 3px); } 80% { transform: translate(4px, -1px); } }
+@keyframes flicker { 0%, 100% { opacity: 1; transform: scaleY(1); } 33% { opacity: 0.85; transform: scaleY(0.94); } 66% { opacity: 0.95; transform: scaleY(1.05); } }
+@keyframes glow-pulse { 0%, 100% { filter: drop-shadow(0 0 6px var(--glow, #69E6F1)); } 50% { filter: drop-shadow(0 0 18px var(--glow, #69E6F1)); } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes draw-line { from { stroke-dashoffset: var(--len, 600); } to { stroke-dashoffset: 0; } }
+@keyframes blink-caret { 50% { opacity: 0; } }
+
+.anim-twinkle { animation: twinkle 2.6s ease-in-out infinite; }
+.anim-bob { animation: bob 2.4s ease-in-out infinite; }
+.anim-float { animation: float 4s ease-in-out infinite; }
+.anim-pop { animation: pop-in 420ms cubic-bezier(.2,1.4,.4,1) both; }
+.anim-rise { animation: rise-in 420ms ease-out both; }
+.anim-fade { animation: fade-in 300ms ease-out both; }
+.anim-shake { animation: shake 420ms steps(6) 2; }
+.anim-flicker { animation: flicker 0.5s steps(3) infinite; transform-origin: bottom center; }
+.anim-glow { animation: glow-pulse 2.2s ease-in-out infinite; }
+.caret::after { content: "▌"; margin-left: 2px; color: var(--color-ice); animation: blink-caret 0.8s steps(1) infinite; }
+
+/* Reduced motion: decorative loops stop, entrances become simple fades. */
+.reduced-motion .anim-twinkle,
+.reduced-motion .anim-bob,
+.reduced-motion .anim-float,
+.reduced-motion .anim-flicker,
+.reduced-motion .anim-glow,
+.reduced-motion .anim-shake { animation: none !important; }
+.reduced-motion .anim-pop,
+.reduced-motion .anim-rise { animation: fade-in 200ms ease-out both !important; }
+.reduced-motion .btn:hover { transform: none; }
+
+/* thin scrollbars for the few scrolling panels (archive, chapter list) */
+.scroll-y { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--color-night-4) transparent; }
+
+/* role highlights on cream "paper" panels need deeper colors to stay readable */
+.on-paper .mark-A { background: rgba(247, 198, 95, 0.6); box-shadow: inset 0 -0.14em 0 #b98426; }
+.on-paper .mark-B { background: rgba(105, 230, 241, 0.5); box-shadow: inset 0 -0.14em 0 #1f8a99; }
+.on-paper .role-A { color: #8a5a00; }
+.on-paper .role-B { color: #0d6f7d; }
+
+/* chips in the chi diagram schematic */
+.chip {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  padding: 0.12em 0.55em 0.16em;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  background: var(--color-night);
+  box-shadow: 0 0 0 4px currentColor, 0 0 0 7px #070b14;
+}
+.chip-A { color: var(--color-gold); }
+.chip-B { color: var(--color-ice); }
+.chip-C { color: #ff9aa2; }
